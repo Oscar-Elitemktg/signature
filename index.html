@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Signature Generator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1e3a8a, #0891b2);
+            color: white;
+            text-align: center;
+            padding: 30px;
+            position: relative;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('https://www.elitelegalmarketing.com/wp-content/uploads/2024/04/logo.png') no-repeat center right;
+            background-size: 200px auto;
+            opacity: 0.1;
+            pointer-events: none;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: 600;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            opacity: 0.95;
+            font-size: 1.1rem;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0;
+            min-height: 80vh;
+        }
+
+        .form-section {
+            padding: 40px;
+            background: #f8f9fa;
+            border-right: 1px solid #e9ecef;
+        }
+
+        .preview-section {
+            padding: 40px;
+            background: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #1e3a8a;
+            font-size: 0.95rem;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #0891b2;
+            box-shadow: 0 0 0 3px rgba(8, 145, 178, 0.1);
+        }
+
+        .section-title {
+            font-size: 1.3rem;
+            color: #1e3a8a;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #0891b2;
+            font-weight: 600;
+        }
+
+        .signature-preview {
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            padding: 20px;
+            background: white;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
+            margin-bottom: 20px;
+            max-width: 800px;
+            width: 100%;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #1e3a8a, #0891b2);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 15px rgba(30, 58, 138, 0.3);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+            transform: translateY(-2px);
+        }
+
+        .btn-word {
+            background: #0078d4;
+            color: white;
+        }
+
+        .btn-word:hover {
+            background: #106ebe;
+            transform: translateY(-2px);
+        }
+
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 12px 20px;
+            border-radius: 8px;
+            margin-top: 15px;
+            display: none;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .form-section {
+                border-right: none;
+                border-bottom: 1px solid #e9ecef;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .form-section, .preview-section {
+                padding: 25px;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+        }
+
+        .url-input-group {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 10px;
+            align-items: end;
+        }
+
+        .file-input-wrapper {
+            position: relative;
+            display: inline-block;
+            width: 100%;
+        }
+
+        .file-input {
+            position: absolute;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+
+        .file-input-display {
+            padding: 12px 16px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: block;
+            width: 100%;
+        }
+
+        .file-input-display:hover {
+            border-color: #0891b2;
+        }
+
+        .upload-btn {
+            padding: 8px 16px;
+            background: #28a745;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            white-space: nowrap;
+        }
+
+        .upload-btn:hover {
+            background: #218838;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Elite Legal Marketing</h1>
+            <p>Email Signature Generator - Create professional signatures for your team</p>
+        </div>
+        
+        <div class="main-content">
+            <div class="form-section">
+                <div class="section-title">Personal Information</div>
+                
+                <div class="form-group">
+                    <label for="fullName">Full Name</label>
+                    <input type="text" id="fullName" placeholder="Oscar Flores" value="Oscar Flores">
+                </div>
+                
+                <div class="form-group">
+                    <label for="jobTitle">Job Title</label>
+                    <input type="text" id="jobTitle" placeholder="Web Developer" value="Web Developer">
+                </div>
+                
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" placeholder="oscar.medeles@elitemktg.com" value="oscar.medeles@elitemktg.com">
+                </div>
+                
+                <div class="form-group">
+                    <label for="phone">Phone Number</label>
+                    <input type="tel" id="phone" placeholder="(897) 107 5866" value="(897) 107 5866">
+                </div>
+
+                <div class="section-title">Company Information</div>
+                
+                <div class="form-group">
+                    <label for="website">Website URL</label>
+                    <input type="url" id="website" placeholder="www.elitelegalmarketing.com" value="www.elitelegalmarketing.com">
+                </div>
+                
+                <div class="form-group">
+                    <label for="address">Address</label>
+                    <input type="text" id="address" placeholder="901 Red River Street, #1302" value="901 Red River Street, #1302">
+                </div>
+                
+                <div class="form-group">
+                    <label for="cityState">City, State ZIP</label>
+                    <input type="text" id="cityState" placeholder="Austin, TX 78701" value="Austin, TX 78701">
+                </div>
+
+                <div class="section-title">Images & Links</div>
+                
+                <div class="form-group">
+                    <label for="profileImage">Profile Image URL</label>
+                    <div class="url-input-group">
+                        <input type="url" id="profileImage" placeholder="https://example.com/profile.png" value="https://www.elitelegalmarketing.com/wp-content/uploads/2022/08/new-email-sign-4.png">
+                        <div class="file-input-wrapper">
+                            <input type="file" id="profileImageFile" class="file-input" accept="image/*">
+                            <button class="upload-btn" onclick="document.getElementById('profileImageFile').click()">Upload</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="companyLogo">Company Logo URL</label>
+                    <div class="url-input-group">
+                        <input type="url" id="companyLogo" placeholder="https://example.com/logo.png" value="https://www.elitelegalmarketing.com/wp-content/uploads/2022/07/email-template-logo.png">
+                        <div class="file-input-wrapper">
+                            <input type="file" id="companyLogoFile" class="file-input" accept="image/*">
+                            <button class="upload-btn" onclick="document.getElementById('companyLogoFile').click()">Upload</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="linkedinUrl">LinkedIn Profile URL (optional)</label>
+                    <input type="url" id="linkedinUrl" placeholder="https://linkedin.com/in/yourprofile" value="">
+                </div>
+            </div>
+            
+            <div class="preview-section">
+                <div class="section-title">Preview</div>
+                
+                <div class="signature-preview">
+                    <div id="signatureOutput">
+                        <!-- Signature will be generated here -->
+                    </div>
+                </div>
+                
+                <div class="action-buttons">
+                    <button class="btn btn-primary" onclick="copySignature()">
+                        📋 Copy HTML
+                    </button>
+                    <button class="btn btn-word" onclick="copyForWord()">
+                        📄 Copy for Word
+                    </button>
+                    <button class="btn btn-secondary" onclick="downloadSignature()">
+                        💾 Download HTML
+                    </button>
+                </div>
+                
+                <div id="successMessage" class="success-message">
+                    Signature copied to clipboard!
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Form elements
+        const formInputs = {
+            fullName: document.getElementById('fullName'),
+            jobTitle: document.getElementById('jobTitle'),
+            email: document.getElementById('email'),
+            phone: document.getElementById('phone'),
+            website: document.getElementById('website'),
+            address: document.getElementById('address'),
+            cityState: document.getElementById('cityState'),
+            profileImage: document.getElementById('profileImage'),
+            companyLogo: document.getElementById('companyLogo'),
+            linkedinUrl: document.getElementById('linkedinUrl')
+        };
+
+        // File upload handlers
+        document.getElementById('profileImageFile').addEventListener('change', function(e) {
+            handleFileUpload(e, 'profileImage');
+        });
+
+        document.getElementById('companyLogoFile').addEventListener('change', function(e) {
+            handleFileUpload(e, 'companyLogo');
+        });
+
+        function handleFileUpload(event, targetInputId) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById(targetInputId).value = e.target.result;
+                    generateSignature();
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // Generate signature function
+        function generateSignature() {
+            const data = {};
+            for (let key in formInputs) {
+                data[key] = formInputs[key].value;
+            }
+
+            // LinkedIn section - always show the LinkedIn icon area
+            const linkedinSection = data.linkedinUrl.trim() ? 
+                `<a href="${data.linkedinUrl}" style="color:rgb(66,139,202);outline:none"><img src="https://www.elitelegalmarketing.com/wp-content/uploads/2022/07/email-template-linkedin.png" alt="img" style="border:0px;vertical-align:middle" class="CToWUd" data-bit="iit"></a>` : 
+                `<img src="https://www.elitelegalmarketing.com/wp-content/uploads/2022/07/email-template-linkedin.png" alt="img" style="border:0px;vertical-align:middle;opacity:0.3" class="CToWUd" data-bit="iit">`;
+
+            const signatureHTML = `<div dir="ltr" class="gmail_signature" data-smartmail="gmail_signature">
+    <div dir="ltr">
+        <table cellpadding="0" cellspacing="0" height="100%" width="768" style="border-spacing:0px;border-collapse:collapse;color:rgb(51,51,51);font-family:&quot;Open Sans&quot;,sans-serif;font-size:14px">
+            <tbody>
+                <tr>
+                    <td style="padding:0px;width:178px;vertical-align:top;background-image:url(&quot;https://www.elitelegalmarketing.com/wp-content/uploads/2022/07/email-template-square-bg.png&quot;);background-position:left 86px;background-repeat:no-repeat no-repeat">
+                        <table cellpadding="0" cellspacing="0" width="" style="border-spacing:0px;border-collapse:collapse">
+                            <tbody>
+                                <tr>
+                                    <td style="padding:34px 0px 34px 44px;text-align:center;border-radius:67px;display:block">
+                                        <img alt="" src="${data.profileImage}" style="border:0px;vertical-align:middle;max-width:134px;border-radius:100%;display:block" class="CToWUd" data-bit="iit">
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </td>
+                    <td style="padding:34px 0px 0px 25px;width:300px;vertical-align:top">
+                        <table cellpadding="0" cellspacing="0" width="" style="border-spacing:0px;border-collapse:collapse;border-right-width:1px;border-right-style:solid;border-right-color:rgb(234,236,239);width:275px">
+                            <tbody>
+                                <tr>
+                                    <td style="padding:6px 0px 0px">
+                                        <ul style="margin:0px 0px 7px;padding:0px;list-style:none">
+                                            <li style="display:inline-block;vertical-align:top;margin:0px 7px 0px 0px">
+                                                ${linkedinSection}
+                                            </li>
+                                        </ul>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="padding:0px">
+                                        <h2 style="font-family:Roboto,sans-serif;line-height:24px;color:rgb(59,68,70);margin:0px 0px 8px;font-size:24px;text-transform:uppercase">${data.fullName.toUpperCase()}</h2>
+                                        <h6 style="font-family:Roboto,sans-serif;line-height:13px;color:rgb(1,153,166);margin-top:0px;margin-bottom:10px;font-size:13px">${data.jobTitle}</h6>
+                                    </td>
+                                </tr>
+                                <tr style="padding-right:30px;display:block">
+                                    <td style="padding:0px">
+                                        <p style="margin:0px 0px 5px;font-size:13px;color:rgb(59,68,70);line-height:13px;font-family:sans-serif">
+                                            <img width="13" src="https://www.elitelegalmarketing.com/wp-content/uploads/2022/07/email-1.png" style="border:0px;vertical-align:middle" class="CToWUd" data-bit="iit">&nbsp;<a href="mailto:${data.email}" target="_blank">${data.email}</a>
+                                        </p>
+                                        <p style="margin:0px 0px 5px;font-size:13px;color:rgb(59,68,70);line-height:13px;font-family:sans-serif">
+                                            <img width="13" src="https://www.elitelegalmarketing.com/wp-content/uploads/2022/07/phone-call-1.png" style="border:0px;vertical-align:middle" class="CToWUd" data-bit="iit">&nbsp;${data.phone}
+                                        </p>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </td>
+                    <td style="padding:43px 0px 0px 27px;vertical-align:top">
+                        <table cellpadding="0" cellspacing="0" width="" style="border-spacing:0px;border-collapse:collapse">
+                            <tbody>
+                                <tr>
+                                    <td style="padding:0px">
+                                        <a href="https://${data.website}" style="color:rgb(66,139,202);text-decoration:none;outline:none" target="_blank">
+                                            <img src="${data.companyLogo}" alt="logo" style="border:0px;vertical-align:middle;margin-bottom:25px" class="CToWUd" data-bit="iit">
+                                        </a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="padding:0px">
+                                        <p style="margin:0px;font-size:13px;color:rgb(59,68,70);line-height:13px;font-family:Roboto,sans-serif">
+                                            <a href="https://${data.website}" style="color:rgb(59,68,70);text-decoration:none;outline:none;display:block" target="_blank">${data.website}</a>
+                                        </p>
+                                        <p style="margin:14px 0px 0px;font-size:13px;color:rgb(59,68,70);line-height:16px;font-family:Roboto,sans-serif">
+                                            ${data.address}<br>${data.cityState}
+                                        </p>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>`;
+
+            document.getElementById('signatureOutput').innerHTML = signatureHTML;
+        }
+
+        // Copy signature to clipboard
+        async function copySignature() {
+            const signatureHTML = document.getElementById('signatureOutput').innerHTML;
+            
+            try {
+                await navigator.clipboard.writeText(signatureHTML);
+                showSuccessMessage('HTML signature copied to clipboard!');
+            } catch (err) {
+                fallbackCopy(signatureHTML);
+                showSuccessMessage('HTML signature copied to clipboard!');
+            }
+        }
+
+        // Copy formatted signature for Word
+        async function copyForWord() {
+            const signatureElement = document.getElementById('signatureOutput');
+            
+            try {
+                // Create a new range and select the signature content
+                const range = document.createRange();
+                range.selectNodeContents(signatureElement);
+                
+                const selection = window.getSelection();
+                selection.removeAllRanges();
+                selection.addRange(range);
+                
+                // Copy the formatted content
+                document.execCommand('copy');
+                
+                // Clear selection
+                selection.removeAllRanges();
+                
+                showSuccessMessage('Formatted signature copied for Word!');
+            } catch (err) {
+                // Fallback: copy HTML and inform user
+                const signatureHTML = signatureElement.innerHTML;
+                try {
+                    await navigator.clipboard.writeText(signatureHTML);
+                    showSuccessMessage('HTML copied - paste into Word and it will format automatically!');
+                } catch (err2) {
+                    fallbackCopy(signatureHTML);
+                    showSuccessMessage('HTML copied - paste into Word and it will format automatically!');
+                }
+            }
+        }
+
+        // Fallback copy method for older browsers
+        function fallbackCopy(text) {
+            const textArea = document.createElement('textarea');
+            textArea.value = text;
+            document.body.appendChild(textArea);
+            textArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textArea);
+        }
+
+        // Download signature as HTML file
+        function downloadSignature() {
+            const signatureHTML = document.getElementById('signatureOutput').innerHTML;
+            const fullHTML = `<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Email Signature</title>
+</head>
+<body>
+${signatureHTML}
+</body>
+</html>`;
+            
+            const blob = new Blob([fullHTML], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'email-signature.html';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            showSuccessMessage('Signature downloaded!');
+        }
+
+        // Show success message
+        function showSuccessMessage(message = 'Signature copied to clipboard!') {
+            const successMsg = document.getElementById('successMessage');
+            successMsg.textContent = message;
+            successMsg.style.display = 'block';
+            setTimeout(() => {
+                successMsg.style.display = 'none';
+            }, 3000);
+        }
+
+        // Add event listeners to all form inputs
+        for (let key in formInputs) {
+            formInputs[key].addEventListener('input', generateSignature);
+        }
+
+        // Generate initial signature
+        generateSignature();
+    </script>
+</body>
+</html>

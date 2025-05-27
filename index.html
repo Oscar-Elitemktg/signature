@@ -16,6 +16,11 @@
             background: linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%);
             min-height: 100vh;
             padding: 20px;
+            transition: background 0.3s ease;
+        }
+
+        body.apex-theme {
+            background: linear-gradient(135deg, #8937a4 0%, #e54c9c 100%);
         }
 
         .container {
@@ -33,6 +38,11 @@
             text-align: center;
             padding: 30px;
             position: relative;
+            transition: background 0.3s ease;
+        }
+
+        body.apex-theme .header {
+            background: linear-gradient(135deg, #8937a4, #e54c9c);
         }
 
         .header::before {
@@ -93,6 +103,11 @@
             font-weight: 600;
             color: #1e3a8a;
             font-size: 0.95rem;
+            transition: color 0.3s ease;
+        }
+
+        body.apex-theme .form-group label {
+            color: #8937a4;
         }
 
         .form-group input {
@@ -109,6 +124,12 @@
             outline: none;
             border-color: #0891b2;
             box-shadow: 0 0 0 3px rgba(8, 145, 178, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        body.apex-theme .form-group input:focus {
+            border-color: #e54c9c;
+            box-shadow: 0 0 0 3px rgba(229, 76, 156, 0.1);
         }
 
         .section-title {
@@ -118,6 +139,12 @@
             padding-bottom: 10px;
             border-bottom: 2px solid #0891b2;
             font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        body.apex-theme .section-title {
+            color: #8937a4;
+            border-bottom-color: #e54c9c;
         }
 
         .signature-preview {
@@ -155,11 +182,20 @@
         .btn-primary {
             background: linear-gradient(135deg, #1e3a8a, #0891b2);
             color: white;
+            transition: all 0.3s ease;
+        }
+
+        body.apex-theme .btn-primary {
+            background: linear-gradient(135deg, #8937a4, #e54c9c);
         }
 
         .btn-primary:hover {
             transform: translateY(-2px);
             box-shadow: 0 8px 15px rgba(30, 58, 138, 0.3);
+        }
+
+        body.apex-theme .btn-primary:hover {
+            box-shadow: 0 8px 15px rgba(137, 55, 164, 0.3);
         }
 
         .btn-secondary {
@@ -253,6 +289,11 @@
 
         .file-input-display:hover {
             border-color: #0891b2;
+            transition: all 0.3s ease;
+        }
+
+        body.apex-theme .file-input-display:hover {
+            border-color: #e54c9c;
         }
 
         .upload-btn {
@@ -302,6 +343,11 @@
                     <input type="tel" id="phone" placeholder="(897) 107 5866" value="(897) 107 5866">
                 </div>
 
+                <div class="form-group">
+                    <label for="meetingLink">Meeting Link (optional)</label>
+                    <input type="url" id="meetingLink" placeholder="meetings.hubspot.com/john-doe/meeting-30" value="">
+                </div>
+
                 <div class="section-title">Company Information</div>
                 
                 <div class="form-group">
@@ -317,6 +363,16 @@
                 <div class="form-group">
                     <label for="cityState">City, State ZIP</label>
                     <input type="text" id="cityState" placeholder="Austin, TX 78701" value="Austin, TX 78701">
+                </div>
+
+                <div class="section-title">Company Selection</div>
+                
+                <div class="form-group">
+                    <label for="companyType">Company</label>
+                    <select id="companyType" style="width: 100%; padding: 12px 16px; border: 2px solid #e9ecef; border-radius: 8px; font-size: 1rem; transition: all 0.3s ease; background: white;">
+                        <option value="elite">Elite Legal Marketing</option>
+                        <option value="apex">Apex Medical Marketing</option>
+                    </select>
                 </div>
 
                 <div class="section-title">Images & Links</div>
@@ -363,7 +419,7 @@
                         📋 Copy HTML
                     </button>
                     <button class="btn btn-word" onclick="copyForWord()">
-                        📄 Copy for Word
+                        📧 Copy for Gmail
                     </button>
                     <button class="btn btn-secondary" onclick="downloadSignature()">
                         💾 Download HTML
@@ -380,10 +436,12 @@
     <script>
         // Form elements
         const formInputs = {
+            companyType: document.getElementById('companyType'),
             fullName: document.getElementById('fullName'),
             jobTitle: document.getElementById('jobTitle'),
             email: document.getElementById('email'),
             phone: document.getElementById('phone'),
+            meetingLink: document.getElementById('meetingLink'),
             website: document.getElementById('website'),
             address: document.getElementById('address'),
             cityState: document.getElementById('cityState'),
@@ -420,6 +478,14 @@
                 data[key] = formInputs[key].value;
             }
 
+            if (data.companyType === 'apex') {
+                generateApexSignature(data);
+            } else {
+                generateEliteSignature(data);
+            }
+        }
+
+        function generateEliteSignature(data) {
             // LinkedIn section - always show the LinkedIn icon area
             const linkedinSection = data.linkedinUrl.trim() ? 
                 `<a href="${data.linkedinUrl}" style="color:rgb(66,139,202);outline:none"><img src="https://www.elitelegalmarketing.com/wp-content/uploads/2022/07/email-template-linkedin.png" alt="img" style="border:0px;vertical-align:middle" class="CToWUd" data-bit="iit"></a>` : 
@@ -467,6 +533,9 @@
                                         <p style="margin:0px 0px 5px;font-size:13px;color:rgb(59,68,70);line-height:13px;font-family:sans-serif">
                                             <img width="13" src="https://www.elitelegalmarketing.com/wp-content/uploads/2022/07/phone-call-1.png" style="border:0px;vertical-align:middle" class="CToWUd" data-bit="iit">&nbsp;${data.phone}
                                         </p>
+                                        ${data.meetingLink.trim() ? `<p style="margin:0px 0px 5px;font-size:13px;color:rgb(59,68,70);line-height:13px;font-family:sans-serif">
+                                            <img width="13" src="https://www.elitelegalmarketing.com/wp-content/uploads/2022/07/phone-call-1.png" style="border:0px;vertical-align:middle" class="CToWUd" data-bit="iit">&nbsp;<a href="https://${data.meetingLink}" target="_blank">${data.meetingLink}</a>
+                                        </p>` : ''}
                                     </td>
                                 </tr>
                             </tbody>
@@ -500,6 +569,121 @@
         </table>
     </div>
 </div>`;
+
+            document.getElementById('signatureOutput').innerHTML = signatureHTML;
+        }
+
+        // Update form defaults based on company selection
+        function updateCompanyDefaults() {
+            const companyType = document.getElementById('companyType').value;
+            
+            if (companyType === 'apex') {
+                // Add Apex theme to body
+                document.body.classList.add('apex-theme');
+                
+                // Set Apex defaults
+                document.getElementById('website').value = 'www.apexmedmarketing.com';
+                document.getElementById('companyLogo').value = 'https://www.elitelegalmarketing.com/wp-content/uploads/2024/06/apex-footer-logo-small.png';
+                document.getElementById('profileImage').value = 'https://www.elitelegalmarketing.com/wp-content/uploads/2024/12/ericimage.png';
+                document.getElementById('fullName').value = 'Eric Bersano';
+                document.getElementById('jobTitle').value = 'V.P. of Business Development';
+                document.getElementById('email').value = 'eric@apexmedmarketing.com';
+                document.getElementById('phone').value = '(310) 889-8777';
+                document.getElementById('meetingLink').value = 'meetings.hubspot.com/eric-bersano/eric-30';
+                
+                // Hide LinkedIn field for Apex
+                document.getElementById('linkedinUrl').closest('.form-group').style.display = 'none';
+            } else {
+                // Remove Apex theme from body
+                document.body.classList.remove('apex-theme');
+                
+                // Set Elite defaults
+                document.getElementById('website').value = 'www.elitelegalmarketing.com';
+                document.getElementById('companyLogo').value = 'https://www.elitelegalmarketing.com/wp-content/uploads/2022/07/email-template-logo.png';
+                document.getElementById('profileImage').value = 'https://www.elitelegalmarketing.com/wp-content/uploads/2022/08/new-email-sign-4.png';
+                document.getElementById('fullName').value = 'Oscar Flores';
+                document.getElementById('jobTitle').value = 'Web Developer';
+                document.getElementById('email').value = 'oscar.medeles@elitemktg.com';
+                document.getElementById('phone').value = '(897) 107 5866';
+                document.getElementById('meetingLink').value = '';
+                
+                // Show LinkedIn field for Elite
+                document.getElementById('linkedinUrl').closest('.form-group').style.display = 'block';
+            }
+            
+            generateSignature();
+        }
+
+        // Add company type change listener
+        document.getElementById('companyType').addEventListener('change', updateCompanyDefaults);
+
+        // Initialize with Elite defaults
+        updateCompanyDefaults();
+
+        function generateApexSignature(data) {
+            const signatureHTML = `<table style="background: #ffffff;" width="768" cellspacing="0" cellpadding="0">
+    <tbody>
+        <tr>
+            <td style="padding: 0px; width: 182px; vertical-align: top; background-image: url('https://www.elitelegalmarketing.com/wp-content/uploads/2022/07/email-template-square-bg.png'); background-repeat: no-repeat; background-position: left 86px;">
+                <table width="" cellspacing="0" cellpadding="0">
+                    <tbody>
+                        <tr>
+                            <td style="text-align: center; border-radius: 67px; display: block; padding: 34px 0px 34px 44px;">
+                                <img id="avatar" style="max-width: 134px; border-radius: 100%; display: block;" src="${data.profileImage}" alt="">
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </td>
+            <td style="padding-left: 25px; padding-top: 34px; width: 213px; vertical-align: top;">
+                <table style="border-right: 1px solid rgb(234, 236, 239); width: 100%;" cellspacing="0" cellpadding="0">
+                    <tbody>
+                        <tr><td style="padding-top: 6px;">&nbsp;</td></tr>
+                        <tr>
+                            <td>
+                                <h2 style="font-size: 24px; line-height: 24px; color: #3b4446; font-family: 'Roboto', sans-serif; margin-top: 0px; margin-bottom: 8px;">${data.fullName}</h2>
+                                <h6 id="position" style="font-size: 13px; line-height: 13px; color: #e54c9c; font-family: 'Roboto', sans-serif; margin-top: 0px; margin-bottom: 10px;">${data.jobTitle}</h6>
+                            </td>
+                        </tr>
+                        <tr style="padding-right: 30px; display: block;">
+                            <td id="contact_data">
+                                <p id="email" style="font-size: 13px; line-height: 13px; color: #3b4446; font-family: 'Roboto', sans-serif; margin-top: 0px; margin-bottom: 5px;">
+                                    <img src="https://www.elitelegalmarketing.com/wp-content/uploads/2024/05/email-1.png" width="13"> ${data.email}
+                                </p>
+                                <p id="phone_number" style="font-size: 13px; line-height: 13px; color: #3b4446; font-family: 'Roboto', sans-serif; margin-top: 0px; margin-bottom: 5px;">
+                                    <img src="https://www.elitelegalmarketing.com/wp-content/uploads/2024/05/phone-call-1.png" width="13"> ${data.phone}
+                                </p>
+                                ${data.meetingLink.trim() ? `<p id="meeting_link" style="font-size: 13px; line-height: 13px; color: #3b4446; font-family: 'Roboto', sans-serif; margin-top: 0px; margin-bottom: 5px;">
+                                    <img src="https://www.elitelegalmarketing.com/wp-content/uploads/2024/05/phone-call-1.png" width="13"> <a href="https://${data.meetingLink}" target="_blank">${data.meetingLink}</a>
+                                </p>` : ''}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </td>
+            <td style="padding-left: 27px; padding-top: 43px; vertical-align: top; width: 317px;">
+                <table cellspacing="0" cellpadding="0">
+                    <tbody>
+                        <tr>
+                            <td><a href="https://${data.website}"><img style="margin-bottom: 25px;" src="${data.companyLogo}" alt="logo"></a></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <p style="font-size: 13px; line-height: 13px; color: #3b4446; font-family: 'Roboto', sans-serif; margin: 0px;">
+                                    <a href="https://${data.website}">${data.website}</a>
+                                </p>
+                                <p style="font-size: 13px; line-height: 13px; color: #3b4446; font-family: 'Roboto', sans-serif; margin: 0px;">&nbsp;</p>
+                                <p style="font-size: 13px; line-height: 13px; color: #3b4446; font-family: 'Roboto', sans-serif; margin: 0px;">
+                                    ${data.address}<br>${data.cityState}
+                                </p>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+    </tbody>
+</table>`;
 
             document.getElementById('signatureOutput').innerHTML = signatureHTML;
         }

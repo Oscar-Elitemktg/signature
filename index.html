@@ -179,35 +179,6 @@
             text-decoration: none;
         }
 
-        .btn-primary {
-            background: linear-gradient(135deg, #1e3a8a, #0891b2);
-            color: white;
-            transition: all 0.3s ease;
-        }
-
-        body.apex-theme .btn-primary {
-            background: linear-gradient(135deg, #8937a4, #e54c9c);
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 15px rgba(30, 58, 138, 0.3);
-        }
-
-        body.apex-theme .btn-primary:hover {
-            box-shadow: 0 8px 15px rgba(137, 55, 164, 0.3);
-        }
-
-        .btn-secondary {
-            background: #6c757d;
-            color: white;
-        }
-
-        .btn-secondary:hover {
-            background: #5a6268;
-            transform: translateY(-2px);
-        }
-
         .btn-word {
             background: #0078d4;
             color: white;
@@ -409,14 +380,8 @@
                 </div>
                 
                 <div class="action-buttons">
-                    <button class="btn btn-primary" onclick="copySignature()">
-                        📋 Copy HTML
-                    </button>
                     <button class="btn btn-word" onclick="copyForWord()">
                         📧 Copy for Gmail
-                    </button>
-                    <button class="btn btn-secondary" onclick="downloadSignature()">
-                        💾 Download HTML
                     </button>
                 </div>
                 
@@ -663,19 +628,6 @@
             document.getElementById('signatureOutput').innerHTML = signatureHTML;
         }
 
-        // Copy signature to clipboard
-        async function copySignature() {
-            const signatureHTML = document.getElementById('signatureOutput').innerHTML;
-            
-            try {
-                await navigator.clipboard.writeText(signatureHTML);
-                showSuccessMessage('HTML signature copied to clipboard!');
-            } catch (err) {
-                fallbackCopy(signatureHTML);
-                showSuccessMessage('HTML signature copied to clipboard!');
-            }
-        }
-
         // Copy formatted signature for Word
         async function copyForWord() {
             const signatureElement = document.getElementById('signatureOutput');
@@ -695,7 +647,7 @@
                 // Clear selection
                 selection.removeAllRanges();
                 
-                showSuccessMessage('Formatted signature copied for Word!');
+                showSuccessMessage('Signature copied - paste it into Gmail!');
             } catch (err) {
                 // Fallback: copy HTML and inform user
                 const signatureHTML = signatureElement.innerHTML;
@@ -717,32 +669,6 @@
             textArea.select();
             document.execCommand('copy');
             document.body.removeChild(textArea);
-        }
-
-        // Download signature as HTML file
-        function downloadSignature() {
-            const signatureHTML = document.getElementById('signatureOutput').innerHTML;
-            const fullHTML = `<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <title>Email Signature</title>
-</head>
-<body>
-${signatureHTML}
-</body>
-</html>`;
-            
-            const blob = new Blob([fullHTML], { type: 'text/html' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'email-signature.html';
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-            showSuccessMessage('Signature downloaded!');
         }
 
         // Show success message
